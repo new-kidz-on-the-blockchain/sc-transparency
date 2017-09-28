@@ -11,10 +11,16 @@
 <!--</button>-->
 <!--</form>-->
 
+<!-- [supplier]="suppliers | async" -->
+
 <div id="content" style="padding: 20px; margin: 0px auto; max-width: 500px">
 
 
-  <md-slider style="width:100%" [(ngModel)]="selected" [step]="1" [min]="0" [max]="(suppliers | async)?.size - 1" [thumbLabel]="true"></md-slider>
+
+
+  <app-map-component ></app-map-component>
+  <md-slider style="width:100%" [(ngModel)]="selected" [step]="1" [min]="0" [max]="(suppliers | async)?.size - 1" [thumbLabel]="true"
+   (input)="onInputChange($event)"></md-slider>
   <app-supplierviewcard [supplier]="(suppliers | async)?.get(selected)"></app-supplierviewcard>
 
 

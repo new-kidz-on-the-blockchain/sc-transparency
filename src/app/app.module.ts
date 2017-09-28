@@ -18,6 +18,8 @@ import {
 import {SupplierviewcardComponent} from './supplierviewcard/supplierviewcard.component';
 import {BackendService} from './backend.service';
 import {QrScannerModule} from 'angular2-qrscanner';
+import { AngularOpenlayersModule } from 'ngx-openlayers';
+import { MapComponentComponent } from './map-component/map-component.component';
 
 @NgModule({
   imports: [
@@ -35,14 +37,16 @@ import {QrScannerModule} from 'angular2-qrscanner';
     MdStepperModule,
     QrScannerModule,
     MdSnackBarModule,
-    MdInputModule
+    MdInputModule,
+    AngularOpenlayersModule
 
   ],
   declarations: [
     InputComponent,
     ViewComponent,
     RootComponent,
-    SupplierviewcardComponent
+    SupplierviewcardComponent,
+    MapComponentComponent
   ],
   bootstrap: [RootComponent],
   providers: [

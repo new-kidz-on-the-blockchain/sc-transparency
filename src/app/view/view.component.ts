@@ -22,4 +22,9 @@ export class ViewComponent implements OnInit {
     this.suppliers = this.backendService.getSuppliers('blablabla');
   }
 
+  onInputChange(event) {
+    let silderValue = event.value;
+    alert("vakue changed" + silderValue);
+  }
+
 }

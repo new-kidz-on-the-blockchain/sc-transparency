@@ -14,19 +14,12 @@ export class InputComponent implements OnInit {
    rForm: FormGroup;
    post:any;                     // A property for our submitted form
    description:string = '';
-   model = {};
-   @ViewChild('hardwareVideo') hardwareVideo: any;
-  // name:string = '';
+
 
    constructor(private fb: FormBuilder, private router: Router, public snackBar: MdSnackBar) {
-
      this.rForm = fb.group({
        'productCode' : [null, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(50)])]
      });
-
-
-
-
    }
 
     ngOnInit() {
