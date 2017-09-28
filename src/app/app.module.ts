@@ -12,10 +12,12 @@ import {
   MdCardModule,
   MdFormFieldModule,
   MdButtonModule,
-  MdStepperModule
+  MdStepperModule,
+  MdSnackBarModule, MdInputModule
 } from '@angular/material';
 import {SupplierviewcardComponent} from './supplierviewcard/supplierviewcard.component';
-import {BackendService} from "./backend.service";
+import {BackendService} from './backend.service';
+import {QrScannerModule} from 'angular2-qrscanner';
 
 @NgModule({
   imports: [
@@ -30,7 +32,10 @@ import {BackendService} from "./backend.service";
     MdCardModule,
     MdFormFieldModule,
     MdButtonModule,
-    MdStepperModule
+    MdStepperModule,
+    QrScannerModule,
+    MdSnackBarModule,
+    MdInputModule
 
   ],
   declarations: [

@@ -21,8 +21,14 @@
 
     <form [formGroup]="rForm" (ngSubmit)="addPost()">
       <div class="form-group">
-        <label for="exampleInputEmail1">Transparency Code</label>
-        <input type="text" class="form-control" id="name" placeholder="Enter Product Code" formControlName="productCode">
+
+
+        <md-form-field class="example-full-width">
+        <!-- <input mdInput id="name" placeholder="Enter Product Code" formControlName="productCode"> -->
+
+  <input mdInput placeholder="Enter Product Code" formControlName="productCode">
+         <!-- <input mdInput placeholder="Favorite food" value="Sushi"> -->
+        </md-form-field>
         <small id="emailHelp" class="form-text text-muted">Enter the transparency code or use the camera to scan it</small>
       </div>
       <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
@@ -38,6 +44,14 @@
 </md-card>
 
 </div>
+<div style="display: none;">
 
-
-<video #hardwareVideo></video>
+<qr-scanner
+   [debug]="false"
+   [canvasWidth]="640"
+   [canvasHeight]="480"
+   [mirror]="false"
+   [stopAfterScan]="true"
+   [updateTime]="500"
+   (onRead)="decodedOutput($event)"></qr-scanner>
+ </div>
