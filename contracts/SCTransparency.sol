@@ -6,8 +6,9 @@ contract SCTransparency{
     string productName;
     address[] origin;
     string location;
-
   }
+
+  mapping (uint => address) public qrCodeToTx;
 
   LifeCyclePoint[] lifeCyclePoints;
 
