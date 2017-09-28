@@ -6,7 +6,8 @@ import { InputComponent } from './input/input.component';
 import {RootComponent, routing} from './routes';
 import {ViewComponent} from './view/view.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MdSliderModule, MdToolbarModule, MdCardModule, MdFormFieldModule, MdButtonModule} from '@angular/material';
+import {MdSliderModule, MdToolbarModule, MdCardModule, MdFormFieldModule, MdButtonModule, MdSnackBarModule, MdInputModule } from '@angular/material';
+import { QrScannerModule } from 'angular2-qrscanner';
 
 @NgModule({
   imports: [
@@ -20,7 +21,10 @@ import {MdSliderModule, MdToolbarModule, MdCardModule, MdFormFieldModule, MdButt
     MdSliderModule,
     MdCardModule,
     MdFormFieldModule,
-    MdButtonModule
+    MdButtonModule,
+    QrScannerModule,
+    MdSnackBarModule,
+    MdInputModule
 
   ],
   declarations: [

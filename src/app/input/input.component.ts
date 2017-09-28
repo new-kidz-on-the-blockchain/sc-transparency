@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, Routes, Router } from '@angular/router';
+import {MdSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-input',
@@ -17,7 +18,7 @@ export class InputComponent implements OnInit {
    @ViewChild('hardwareVideo') hardwareVideo: any;
   // name:string = '';
 
-   constructor(private fb: FormBuilder, private router: Router) {
+   constructor(private fb: FormBuilder, private router: Router, public snackBar: MdSnackBar) {
 
      this.rForm = fb.group({
        'productCode' : [null, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(50)])]
@@ -39,21 +40,24 @@ export class InputComponent implements OnInit {
     this.description = post.description;
   }
 
+
+  decodedOutput(scannedResult) {
+    //alert(scannedResult);
+    this.snackBar.open(scannedResult);
+    this.router.navigate(['view', {productid:scannedResult}]);
+  }
+
   onScanClick() {
-
-    let video = this.hardwareVideo.nativeElement;
-
-       var n = <any>navigator;
-
-       n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia  || n.msGetUserMedia );
-
-       n.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-           video.src = window.URL.createObjectURL(stream);
-           video.play();
-       });
-
-
-
+    // let video = this.hardwareVideo.nativeElement;
+    //
+    //    var n = <any>navigator;
+    //
+    //    n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia  || n.msGetUserMedia );
+    //
+    //    n.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+    //        video.src = window.URL.createObjectURL(stream);
+    //        video.play();
+    //    });
 }
 
 }
