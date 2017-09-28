@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, Routes, Router } from '@angular/router';
 
@@ -13,25 +13,47 @@ export class InputComponent implements OnInit {
    rForm: FormGroup;
    post:any;                     // A property for our submitted form
    description:string = '';
-   name:string = '';
+   model = {};
+   @ViewChild('hardwareVideo') hardwareVideo: any;
+  // name:string = '';
 
-   constructor(private fb: FormBuilder/*, private router: Router*/) {
+   constructor(private fb: FormBuilder, private router: Router) {
 
      this.rForm = fb.group({
-       'name' : [null, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(50)])]
+       'productCode' : [null, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(50)])]
      });
+
+
+
 
    }
 
     ngOnInit() {
     }
 
-    addPost(post) {
-      alert("test");
+    onSubmitClick(post) {
+      var enteredProductCode = this.rForm.getRawValue().productCode;
+      alert(enteredProductCode);
+      this.router.navigate(['view', {productid:enteredProductCode}]);
     //  this.router.navigate(['view']);
     this.description = post.description;
-    this.name = post.name;
   }
 
+  onScanClick() {
+
+    let video = this.hardwareVideo.nativeElement;
+
+       var n = <any>navigator;
+
+       n.getUserMedia = ( n.getUserMedia || n.webkitGetUserMedia || n.mozGetUserMedia  || n.msGetUserMedia );
+
+       n.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+           video.src = window.URL.createObjectURL(stream);
+           video.play();
+       });
+
+
+
+}
 
 }
