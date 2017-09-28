@@ -43,9 +43,6 @@
   </md-card-actions>
 </md-card>
 
-</div>
-<div style="display: none;">
-
 <qr-scanner
    [debug]="false"
    [canvasWidth]="640"
@@ -54,4 +51,5 @@
    [stopAfterScan]="true"
    [updateTime]="500"
    (onRead)="decodedOutput($event)"></qr-scanner>
- </div>
+
+</div>
