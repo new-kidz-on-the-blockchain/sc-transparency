@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 import { InputComponent } from './input/input.component';
 import {RootComponent, routing} from './routes';
 import {ViewComponent} from './view/view.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MdSliderModule, MdToolbarModule, MdCardModule, MdFormFieldModule, MdButtonModule} from '@angular/material';
 
 @NgModule({
   imports: [
@@ -12,14 +14,20 @@ import {ViewComponent} from './view/view.component';
     FormsModule,
     HttpModule,
     routing,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MdToolbarModule,
+    MdSliderModule,
+    MdCardModule,
+    MdFormFieldModule,
+    MdButtonModule
+
   ],
   declarations: [
     InputComponent,
     ViewComponent,
-    RootComponent,
+    RootComponent
   ],
-  providers: [],
   bootstrap: [RootComponent]
 })
 export class AppModule { }
