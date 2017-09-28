@@ -1,38 +1,53 @@
-pragma solidity ^0.4.2;
+  pragma solidity ^0.4.2;
 
-contract SCTransparency{
+  contract SCTransparency{
 
-  struct LifeCyclePoint{
-    string productName;
-    address[] origin;
-    string location;
+    struct LifeCyclePoint{
+      string productName;
+      uint[] origin;
+      string location;
+    }
+
+    address private owner;
+
+    function SCTransparency(){
+      owner = tx.origin;
+    }
+
+    mapping (uint => uint) public qrCodeToTx;
+
+    LifeCyclePoint[] lifeCyclePoints;
+
+    function addLifecyclePoint(string _productName, uint[] _origin, string _location) returns (uint){
+
+      LifeCyclePoint memory p = LifeCyclePoint(_productName, _origin, _location);
+
+      lifeCyclePoints.push(p);
+      return lifeCyclePoints.length-1;
+
+    }
+
+    function mapQrCodeToTxid(uint _qrcode, uint _txid){
+      qrCodeToTx[_qrcode] = _txid;
+    }
+
+    function getTxidFromQrCode(uint _qrcode) returns (uint){
+      return qrCodeToTx[_qrcode];
   }
 
-  mapping (uint => address) public qrCodeToTx;
+    event Info(uint _txid, string _info);
+    event Change(uint _txid,string _attribute, string _value);
+    event Recall(uint _txid, string _reason);
 
-  LifeCyclePoint[] lifeCyclePoints;
+    function addInfo(uint _txid, string _info){
+      Info(_txid, _info);
+    }
 
-  function addLifecyclePoint(string _productName, address[] _origin, string _location){
-    LifeCyclePoint memory p = LifeCyclePoint(_productName, _origin, _location);
-
-    lifeCyclePoints.push(p);
+    function addRecall(uint _txid, string _reason){
+      Recall(_txid, _reason);
+    }
+    function addChange(uint _txid, string _attribute, string _value){
+      Change(_txid, _attribute, _value);
+    }
 
   }
-
-
-  event Info(address txid, string info);
-  event Change(address txid,string attribute, string value);
-  event Recall(address txid, string reason);
-
-  function addInfo(address _txid, string _info){
-    Info(_txid, _info);
-  }
-
-  function addRecall(address _txid, string _reason){
-    Recall(_txid, _reason);
-  }
-  function addChange(address _txid, string _attribute, string _value){
-    Change(_txid, _attribute, _value);
-  }
-  
-}
