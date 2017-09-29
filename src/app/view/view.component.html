@@ -15,10 +15,7 @@
 
 <div id="content" style="padding: 20px; margin: 0px auto; max-width: 500px">
 
-
-
-
-  <app-map-component [selectedsupplier]="selected"></app-map-component>
+  <app-map-component [supliers]="suppliers | async" [selectedsupplier]="(suppliers | async)?.get(selected)"></app-map-component>
   <md-slider style="width:100%" [(ngModel)]="selected" [step]="1" [min]="0" [max]="(suppliers | async)?.size - 1" [thumbLabel]="true"
    (input)="onInputChange($event)"></md-slider>
   <app-supplierviewcard [supplier]="(suppliers | async)?.get(selected)"></app-supplierviewcard>

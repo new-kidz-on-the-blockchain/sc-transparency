@@ -20,6 +20,7 @@ import {BackendService} from './backend.service';
 import {QrScannerModule} from 'angular2-qrscanner';
 import { AngularOpenlayersModule } from 'ngx-openlayers';
 import { MapComponentComponent } from './map-component/map-component.component';
+import { CoordmapPipe } from './coordmap.pipe';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import { MapComponentComponent } from './map-component/map-component.component';
     ViewComponent,
     RootComponent,
     SupplierviewcardComponent,
-    MapComponentComponent
+    MapComponentComponent,
+    CoordmapPipe
   ],
   bootstrap: [RootComponent],
   providers: [

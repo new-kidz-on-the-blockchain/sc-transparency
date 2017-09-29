@@ -1,8 +1,9 @@
-import {HostListener, Injectable} from '@angular/core';
+import {HostListener, Injectable, NgZone} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import {Supplier} from './model';
 import {List} from 'immutable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 const Web3 = require('web3');
 const contract = require('truffle-contract');
@@ -15,12 +16,40 @@ export class BackendService {
   MetaCoin = contract(metaincoinArtifacts);
   web3: any;
 
-  getSuppliers(hash: string): Observable<List<Supplier>> {
+  constructor(private _ngZone: NgZone) {
+
+  }
+
+  getSuppliers(id: number): Observable<List<Supplier>> {
+
+    const sub: BehaviorSubject<List<Supplier>> = new BehaviorSubject(List([]));
 
     setTimeout(() => {
       this.checkAndInstantiateWeb3();
       this.onReady();
-      this.refreshBalance();
+      // this.refreshBalance();
+      let meta;
+      this.MetaCoin
+        .deployed()
+        .then(instance => {
+          console.log(instance);
+          meta = instance;
+          return meta.getTxidFromQrCode.call(id);
+        })
+        .then(value => {
+          return Promise.all([meta.getProductName.call(value), meta.getLocation.call(value), meta.getOrigin.call(value)]);
+        }).then(value => {
+        const sup = new Supplier();
+        sup.name = value[0];
+        sub.next(List.of(sup));
+        console.log(value);
+        const arr = value[1].split(',');
+        sup.coord = [Number(arr[0]), Number(arr[1])];
+        console.log(sup.coord);
+      }).catch(e => {
+        console.log(e);
+      });
+
     }, 1000);
 
     //
@@ -59,7 +88,7 @@ export class BackendService {
     sup3.hash = '0xaabB03d6b421c8sdfF95C6Aab0e133asdfa9c6BC';
     const list = List.of(sup1, sup2, sup3);
 
-    return Observable.of(list);
+    return sub.asObservable();
 
   }
 
