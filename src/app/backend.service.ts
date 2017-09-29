@@ -35,22 +35,32 @@ export class BackendService {
           console.log(instance);
           meta = instance;
           return meta.getTxidFromQrCode.call(id);
-        })
-        .then(value => {
-          return Promise.all([meta.getProductName.call(value), meta.getLocation.call(value), meta.getOrigin.call(value)]);
         }).then(value => {
-        const sup = new Supplier();
-        sup.name = value[0];
-        sub.next(List.of(sup));
-        console.log(value);
-        const arr = value[1].split(',');
-        sup.coord = [Number(arr[0]), Number(arr[1])];
-        console.log(sup.coord);
-      }).catch(e => {
-        console.log(e);
+	    retrieveProdAndAddToList(value);
+	}).catch(e => {
+            console.log(e);
       });
 
     }, 1000);
+
+      function retrieveProdAndAddToList(value: int){
+	  let pro = Promise.all([meta.getProductName.call(value), meta.getLocation.call(value), meta.getOrigin.call(value)]);
+	  pro.then((val) => {
+              const sup = new Supplier();
+              sup.name = val[0];
+              sub.next(List.of(sup));
+              console.log(value);
+              const arr = val[1].split(',');
+              sup.coord = [Number(arr[0]), Number(arr[1])];
+              //console.log(sup.coord);
+	      for (let i = 0;  i < val[2].length; i++){
+		  retrieveProdAndAddToList(val[2][i]);
+	      }
+
+	  });
+
+
+      }
 
     //
     // this.ScTransparencyContract.setProvider(this.web3.currentProvider);
