@@ -15,6 +15,7 @@
     }
 
     mapping (uint => uint) public qrCodeToTx;
+    mapping (address => string) public supplier;
 
     LifeCyclePoint[] lifeCyclePoints;
 
@@ -30,7 +31,11 @@
 
     function getTxidFromQrCode(uint _qrcode) returns (uint){
       return qrCodeToTx[_qrcode];
-  }
+    }
+
+    function addSupplier(address _sup, string _name){
+      supplier[_sup] = _name;
+    }
 
     event Id(address _origin, uint id);
     event Info(uint _txid, string _info);
