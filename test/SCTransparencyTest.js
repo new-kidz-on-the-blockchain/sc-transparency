@@ -8,24 +8,17 @@ contract('Kontract', function(accounts) {
 
 
   it('should get transaction data', async function() {
-      kontract = await Kontract.deployed();
-      await kontract.addSupplier(accounts[1], 'Coca Cola');
-      sName = await kontract.suppliers.call(accounts[1]);
-      assert.equal(sName, 'Coca Cola', 'No supplier added');
-
-      let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
-      let id = extractId(transactionAddr);
-
-      let origin = await kontract.getOrigin.call(id);
-      assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
+    let txId = await initalKontractAndSuppliersAndLifeCyclePoint(accounts, 'Milch', [], 'WSB', {from: accounts[1]});
+    let origin = await kontract.getOrigin.call(txId);
+    assert.equal(await kontract.getProductName.call(txId),'Milch',"No milk in the Blockchain!");
     assert.deepEqual(origin,[],"origin is fishy");
-    assert.equal(await kontract.getLocation.call(id),   'WSB',"Milk ist not from WSB!");
+    assert.equal(await kontract.getLocation.call(txId),   'WSB',"Milk ist not from WSB!");
   });
 
 
 
   it('should get TxID from QR Code', async function () {
-    let kontract = await Kontract.deployed();
+    await initalKontract();
     kontract.mapQrCodeToTxid(1234567891,0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd);
     let txid = await kontract.getTxidFromQrCode.call(1234567891);
     let txHash = web3.utils.toHex(txid);
@@ -35,42 +28,32 @@ contract('Kontract', function(accounts) {
 
 
   it('should get TxID from QR Code where TxID should be from Product', async function () {
-    let kontract = await Kontract.deployed();
-    await kontract.addSupplier(accounts[1], 'Coca Cola');
-    sName = await kontract.suppliers.call(accounts[1]);
-    assert.equal(sName, 'Coca Cola', 'No supplier added');
-    let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
-    let id = extractId(transactionAddr);
-    kontract.mapQrCodeToTxid(1234567891,id);
-    let txid = await kontract.getTxidFromQrCode.call(1234567891);
-    assert.deepEqual(txid,id,"Wrong TxID");
-
-    assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
-    assert.equal(await kontract.getLocation.call(id),   'WSB',"Milk ist not from WSB!");
+    let txId = await initalKontractAndSuppliersAndLifeCyclePoint(accounts,'Milch', [], 'WSB', {from: accounts[1]});
+    kontract.mapQrCodeToTxid(1234567891,txId);
+    let txIdFromQrCodeMapping = await kontract.getTxidFromQrCode.call(1234567891);
+    assert.deepEqual(txIdFromQrCodeMapping,txId,"Wrong TxID");
+    assert.equal(await kontract.getProductName.call(txId),'Milch',"No milk in the Blockchain!");
+    assert.equal(await kontract.getLocation.call(txId),   'WSB',"Milk ist not from WSB!");
   });
 
 
 
   it('should check supplier added', async function () {
-    let kontract = await Kontract.deployed();
-    await kontract.addSupplier(0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd, 'Nestle');
-    let sName = await kontract.suppliers.call(0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd);
-    assert.equal(sName, 'Nestle', 'No supplier added');
+    await initalKontractAndSuppliers(accounts);
+    let sName = await kontract.suppliers.call(accounts[1]);
+    assert.equal(sName, 'Account 1', 'No Account 1 supplier added');
+    sName = await kontract.suppliers.call(accounts[2]);
+    assert.equal(sName, 'Account 2', 'No Account 2 supplier added');
+    sName = await kontract.suppliers.call(accounts[3]);
+    assert.equal(sName, 'Account 3', 'No Account 3 supplier added');
   })
 
 
 
   it('should throw error for not owner', async function () {
-    let kontract = await Kontract.deployed();
-    await kontract.addSupplier(0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd, 'Nestle');
-    let sName = await kontract.suppliers.call(0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd);
-    assert.equal(sName, 'Nestle', 'No supplier added');
-    await kontract.addSupplier(accounts[1], 'Coca Cola');
-    sName = await kontract.suppliers.call(accounts[1]);
-    assert.equal(sName, 'Coca Cola', 'No supplier added');
-
+    await initalKontractAndSuppliers(accounts);
     try{
-      await kontract.addSupplier(0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd, 'Nestle',{from:accounts[1]});
+      await kontract.addSupplier(accounts[1], 'Account 1',{from:accounts[1]});
     }catch (error){
       assert.equal(error.message, 'VM Exception while processing transaction: invalid opcode', 'Did not throw due to not owner');
     }
@@ -79,51 +62,35 @@ contract('Kontract', function(accounts) {
 
 
   it('should throw error for not supplier', async function () {
-    let kontract = await Kontract.deployed();
-    await kontract.addSupplier(accounts[1], 'Coca Cola');
-
+    await initalKontractAndSuppliers(accounts);
     try{
-      await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[2]});
+      await initalLifecyclePoint('Milch', [], 'WSB', {from: accounts[0]});
     }catch (error){
       assert.equal(error.message, 'VM Exception while processing transaction: invalid opcode', 'Did not throw due to not a supplier');
     }
 
-    let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
-    let id = extractId(transactionAddr);
-
-    let origin = await kontract.getOrigin.call(id);
-    assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
+    let txId = await initalLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
+    let origin = await kontract.getOrigin.call(txId);
+    assert.equal(await kontract.getProductName.call(txId),'Milch',"No milk in the Blockchain!");
     assert.deepEqual(origin,[],"origin is fishy");
-
   })
 
   it('should throw error for not supplier of product', async function () {
-    let kontract = await Kontract.deployed();
-    await kontract.addSupplier(accounts[1], 'Coca Cola');
-
-    let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
-    let id = extractId(transactionAddr);
-
-    let origin = await kontract.getOrigin.call(id);
-    assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
-    assert.deepEqual(origin,[],"origin is fishy");
+    await initalKontractAndSuppliers(accounts);
+    let txId = await initalLifecyclePoint('Milch', [], 'WSB', {from: accounts[1]});
 
     try{
-      await kontract.addInfo(id,'Sonderangebot ööö');
-      await kontract.addChange(id,'Location', 'NSU');
-      await kontract.addRecall(id,'Salmonellen pfui');
+      await kontract.addInfo(txId,'Sonderangebot ööö');
     }catch (error){
       assert.equal(error.message, 'VM Exception while processing transaction: invalid opcode', 'Did not throw due to not a supplier');
     }
-
     try{
-      await kontract.addChange(id,'Location', 'NSU');
+      await kontract.addChange(txId,'Location', 'NSU');
     }catch (error){
       assert.equal(error.message, 'VM Exception while processing transaction: invalid opcode', 'Did not throw due to not a supplier');
     }
-
     try{
-      await kontract.addRecall(id,'Salmonellen pfui');
+      await kontract.addRecall(txId,'Salmonellen pfui');
     }catch (error){
       assert.equal(error.message, 'VM Exception while processing transaction: invalid opcode', 'Did not throw due to not a supplier');
     }
@@ -139,5 +106,30 @@ function extractId(transactionAddr){
 	      return log.args.id;
 	  }
       }
+}
+async function initalKontract() {
+  kontract =  await Kontract.deployed();
+}
+
+async function initalSuppliers(accounts) {
+  await kontract.addSupplier(accounts[1], 'Account 1');
+  await kontract.addSupplier(accounts[2], 'Account 2');
+  await kontract.addSupplier(accounts[3], 'Account 3');
+}
+
+async function initalKontractAndSuppliers(accounts) {
+  await initalKontract();
+  await initalSuppliers(accounts);
+}
+
+async function initalLifecyclePoint(name,origin,location,account) {
+  let transactionAddr = await kontract.addLifecyclePoint(name, origin, location, account);
+  return extractId(transactionAddr);
+}
+
+async function initalKontractAndSuppliersAndLifeCyclePoint(accounts, name, origin, location, account) {
+  await initalKontract();
+  await initalSuppliers(accounts);
+  return await initalLifecyclePoint(name, origin, location, account)
 }
 
