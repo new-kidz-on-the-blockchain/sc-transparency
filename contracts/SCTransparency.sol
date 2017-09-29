@@ -18,13 +18,10 @@
 
     LifeCyclePoint[] lifeCyclePoints;
 
-    function addLifecyclePoint(string _productName, uint[] _origin, string _location) returns (uint){
-
+    function addLifecyclePoint(string _productName, uint[] _origin, string _location) {
       LifeCyclePoint memory p = LifeCyclePoint(_productName, _origin, _location);
-
       lifeCyclePoints.push(p);
-      return lifeCyclePoints.length-1;
-
+      Id(tx.origin, lifeCyclePoints.length-1);
     }
 
     function mapQrCodeToTxid(uint _qrcode, uint _txid){
@@ -35,6 +32,7 @@
       return qrCodeToTx[_qrcode];
   }
 
+    event Id(address _origin, uint id);
     event Info(uint _txid, string _info);
     event Change(uint _txid,string _attribute, string _value);
     event Recall(uint _txid, string _reason);
@@ -48,6 +46,18 @@
     }
     function addChange(uint _txid, string _attribute, string _value){
       Change(_txid, _attribute, _value);
+    }
+
+    function getProductName(uint i) constant returns ( string ){
+      return lifeCyclePoints[i].productName;
+    }
+
+    function getOrigin(uint i) constant returns (uint[]) {
+      return lifeCyclePoints[i].origin;
+    }
+
+    function getLocation(uint i) constant returns (string){
+      return lifeCyclePoints[i].location;
     }
 
   }
