@@ -23,7 +23,7 @@ contract('Kontract', function(accounts) {
     let txid = await kontract.getTxidFromQrCode.call(1234567891);
     let txHash = web3.utils.toHex(txid);
     assert.equal(txHash,0x7d07c0a053eb788e4bee9b61cc207ce2c1b85d879f999454dc9cba0ae6c2cfbd,"Wrong TxID");
-  })
+  });
 
   it('should get TxID from QR Code where TxID should be from Product', async function () {
     let kontract = await Kontract.deployed();
@@ -38,25 +38,8 @@ contract('Kontract', function(accounts) {
     let inputData = decoder.decodeData(transaction.input);
     assert.equal(inputData.inputs[0],'Milch',"No milk in the Blockchain!");
     assert.equal(inputData.inputs[2],'WSB',"Milk ist not from WSB!");
-  })
-
-
-
-  /*
-  it('should say hello', async function() {
-    var kontract = await Kontract.deployed();
-    var result = await kontract.sayHello.call();
-    assert.equal(result, "Hello", "It did not say Hello");
   });
 
-  it('should remember how much money I send', async function() {
-    let kontract = await Kontract.deployed();
-    kontract.sendTransaction({
-      value: 100,
-      from: accounts[0]
-    });
-    let balance = await kontract.getBalance.call(accounts[0]);
-    assert.equal(balance.valueOf(), 100, 'Wert ist nicht 100');
-  });
-  */
+
+
 });
