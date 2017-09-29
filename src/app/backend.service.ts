@@ -3,50 +3,51 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import {Supplier} from './model';
 import {List} from 'immutable';
-const InputDataDecoder = require('ethereum-input-data-decoder');
 
 const Web3 = require('web3');
 const contract = require('truffle-contract');
-const scTransparency = require('../../build/contracts/SCTransparency.json');
+const metaincoinArtifacts = require('../../build/contracts/SCTransparency.json');
 
 declare var window: any;
 
 @Injectable()
 export class BackendService {
-
-  constructor() {
-    this.checkAndInstantiateWeb3();
-    this.onReady();
-  }
-
-  ScTransparencyContract = contract(scTransparency);
-
-  // TODO add proper types these variables
-  account: any;
-  accounts: any;
+  MetaCoin = contract(metaincoinArtifacts);
   web3: any;
-
-  @HostListener('window:load')
-  windowLoaded() {
-    this.checkAndInstantiateWeb3();
-    this.onReady();
-  }
 
   getSuppliers(hash: string): Observable<List<Supplier>> {
 
-    this.web3.eth.getTransaction('0x2a4c4b9afcc0a25f89173684cc481bcd80c02dc6bcc2fe91bad4a84e62367b75').then( val => {
-      console.log(this.web3.toASCII(val.input));
-      console.log(scTransparency);
-      const decoder = new InputDataDecoder(scTransparency.abi.toString());
-      const inputData = decoder.decodeData(val.input);
-      console.log(inputData);
-    });
+    setTimeout(() => {
+      this.checkAndInstantiateWeb3();
+      this.onReady();
+      this.refreshBalance();
+    }, 1000);
 
-    // console.log(transaction);
-    // var inputData = decoder.decodeData(transaction.input);
-    // console.log(inputData);
-    // console.log(inputData.inputs[0]);
-
+    //
+    // this.ScTransparencyContract.setProvider(this.web3.currentProvider);
+    // this.ScTransparencyContract.deployed().then(i => {
+    //   console.log(i);
+    //   return i.getTxidFromQrCode.call(1);
+    // }).then(val => console.log(val));
+    // // let txid = kontract.getTxidFromQrCode.call(1).then();
+    // // assert.deepEqual(txid,id,"Wrong TxID");
+    // //
+    // // assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
+    // // assert.equal(await kontract.getLocation.call(id),   'WSB',"Milk ist not from WSB!");
+    //
+    // // this.web3.eth.getTransaction('0x2a4c4b9afcc0a25f89173684cc481bcd80c02dc6bcc2fe91bad4a84e62367b75').then( val => {
+    // //   console.log(this.web3.toASCII(val.input));
+    // //   console.log(scTransparency);
+    // //   const decoder = new InputDataDecoder(scTransparency.abi.toString());
+    // //   const inputData = decoder.decodeData(val.input);
+    // //   console.log(inputData);
+    // // });
+    //
+    // // console.log(transaction);
+    // // var inputData = decoder.decodeData(transaction.input);
+    // // console.log(inputData);
+    // // console.log(inputData.inputs[0]);
+    //
     const sup1 = new Supplier();
     sup1.name = 'Supplier1';
     sup1.hash = '0xaabB03d6b421c8799F95C6Aab0e133307709c6BC';
@@ -89,9 +90,26 @@ export class BackendService {
 
   onReady = () => {
     // Bootstrap the MetaCoin abstraction for Use.
-    this.ScTransparencyContract.setProvider(this.web3.currentProvider);
-    console.log('init Contract');
+    this.MetaCoin.setProvider(this.web3.currentProvider);
     // Get the initial account balance so it can be displayed.
 
-  }
+  };
+
+  refreshBalance = () => {
+    let meta;
+    this.MetaCoin
+      .deployed()
+      .then(instance => {
+        console.log(instance);
+        meta = instance;
+        return meta.getTxidFromQrCode.call(1);
+      })
+      .then(value => {
+        return meta.getProductName.call(value);
+      }).then(value => {
+      console.log(value);
+    }).catch(e => {
+      console.log(e);
+    });
+  };
 }
