@@ -36,7 +36,7 @@
     LifeCyclePoint[] lifeCyclePoints;
 
     function addLifecyclePoint(string _productName, uint[] _origin, string _location) isSupplier{
-      LifeCyclePoint memory p = LifeCyclePoint(_productName, _origin, _location, msg.sender);
+      LifeCyclePoint memory p = LifeCyclePoint(_productName, _origin, _location, tx.origin);
       lifeCyclePoints.push(p);
       Id(tx.origin, lifeCyclePoints.length-1);
     }
@@ -79,6 +79,10 @@
 
     function getLocation(uint i) constant returns (string){
       return lifeCyclePoints[i].location;
+    }
+
+    function getSupplier(uint i) constant returns (address){
+      return lifeCyclePoints[i].supplier;
     }
 
   }
