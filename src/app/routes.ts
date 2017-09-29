@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {InputComponent} from './input/input.component';
 import {ViewComponent} from './view/view.component';
+import {ChillChainComponent} from "./chillchain/chillchain.component";
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,10 @@ export const routes: Routes = [
   {
     path: 'view',
     component: ViewComponent
+  },
+  {
+    path: 'traces',
+    component: ChillChainComponent
   }
 ];
 

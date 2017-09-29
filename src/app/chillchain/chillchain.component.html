@@ -1,0 +1,48 @@
+<!-- <md-card class="example-card" >
+  <md-card-header>
+    <md-card-title>"dcec"</md-card-title>
+    <md-card-subtitle>"wcw"</md-card-subtitle>
+  </md-card-header>
+  <md-card-content> -->
+
+
+<md-toolbar>
+  <span>Chill Chain</span>
+
+</md-toolbar>
+
+<div id="content" style="padding: 20px; margin: 0px auto; max-width: 500px">
+
+
+  <!-- <div class="row" style="width:auto;height: 200px;margin: 0px">
+    <div class="col-md-6"> -->
+  <div style="display: block; width:400px; height:400px">
+    <canvas baseChart width="400px" height="400px"
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+  </div>
+</div>
+<!--  </div>
+  <div class="col-md-6" style="margin-bottom: 10px">
+    <table class="table table-responsive table-condensed">
+      <tr>
+        <th *ngFor="let label of lineChartLabels">{{label}}</th>
+      </tr>
+      <tr *ngFor="let d of lineChartData">
+        <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
+      </tr>
+    </table>
+    <button (click)="randomize()">CLICK</button>
+  </div>
+</div> -->
+<!-- </md-card-content>
+<md-card-actions>
+  <button md-button>Info</button>
+</md-card-actions>
+</md-card> -->

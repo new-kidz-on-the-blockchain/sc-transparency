@@ -21,6 +21,8 @@ import {QrScannerModule} from 'angular2-qrscanner';
 import { AngularOpenlayersModule } from 'ngx-openlayers';
 import { MapComponentComponent } from './map-component/map-component.component';
 import { CoordmapPipe } from './coordmap.pipe';
+import { ChillChainComponent } from './chillchain/chillchain.component';
+import {ChartsModule} from 'ng2-charts/ng2-charts';
 
 @NgModule({
   imports: [
@@ -39,7 +41,8 @@ import { CoordmapPipe } from './coordmap.pipe';
     QrScannerModule,
     MdSnackBarModule,
     MdInputModule,
-    AngularOpenlayersModule
+    AngularOpenlayersModule,
+    ChartsModule
 
   ],
   declarations: [
@@ -48,7 +51,8 @@ import { CoordmapPipe } from './coordmap.pipe';
     RootComponent,
     SupplierviewcardComponent,
     MapComponentComponent,
-    CoordmapPipe
+    CoordmapPipe,
+    ChillChainComponent
   ],
   bootstrap: [RootComponent],
   providers: [
