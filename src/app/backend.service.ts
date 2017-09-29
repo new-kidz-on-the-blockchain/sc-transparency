@@ -20,6 +20,31 @@ export class BackendService {
 
   }
 
+  blah(subject: BehaviorSubject<List<Supplier>>, val: any) {
+    let meta;
+    this.MetaCoin
+      .deployed()
+      .then(instance => {
+        console.log(instance);
+        meta = instance;
+      })
+      .then(() => {
+        return Promise.all([meta.getProductName.call(val), meta.getLocation.call(val), meta.getOrigin.call(val)]);
+      }).then(value => {
+      const sup = new Supplier();
+      sup.name = value[0];
+      console.log(value);
+      const arr = value[1].split(',');
+      sup.coord = [Number(arr[1]), Number(arr[0])];
+      subject.next(subject.value.push(sup));
+      for (const entry of value[2]) {
+        this.blah(subject, entry); // 1, "string", false
+      }
+    }).catch(e => {
+      console.log(e);
+    });
+  }
+
   getSuppliers(id: number): Observable<List<Supplier>> {
 
     const sub: BehaviorSubject<List<Supplier>> = new BehaviorSubject(List([]));
@@ -28,29 +53,18 @@ export class BackendService {
       this.checkAndInstantiateWeb3();
       this.onReady();
       // this.refreshBalance();
-      let meta;
+
       this.MetaCoin
         .deployed()
         .then(instance => {
-          console.log(instance);
-          meta = instance;
-          return meta.getTxidFromQrCode.call(id);
-        })
-        .then(value => {
-          return Promise.all([meta.getProductName.call(value), meta.getLocation.call(value), meta.getOrigin.call(value)]);
+          return instance.getTxidFromQrCode.call(id);
         }).then(value => {
-        const sup = new Supplier();
-        sup.name = value[0];
-        sub.next(List.of(sup));
-        console.log(value);
-        const arr = value[1].split(',');
-        sup.coord = [Number(arr[0]), Number(arr[1])];
-        console.log(sup.coord);
-      }).catch(e => {
-        console.log(e);
+        this.blah(sub, value);
       });
 
+
     }, 1000);
+
 
     //
     // this.ScTransparencyContract.setProvider(this.web3.currentProvider);

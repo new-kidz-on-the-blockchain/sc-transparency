@@ -32,7 +32,7 @@ export class MapComponentComponent implements OnInit {
 
   // [11.321741, 54.184321], [9.404404, 47.613276], [10.306440, 53.940610]
 
-  public zoom = 5;
+  public zoom = 9;
   public opacity = 1.0;
   public width = 5;
 
