@@ -16,8 +16,21 @@ export class BackendService {
   MetaCoin = contract(metaincoinArtifacts);
   web3: any;
 
-  constructor(private _ngZone: NgZone) {
+  z = {};
 
+  constructor(private _ngZone: NgZone) {
+    this.z["50.131879, 8.749847"] = "Kaufland Warenhandel";
+    this.z["49.302671, 9.367081"] = "Kaufland Warenhandel";
+    this.z["53.940610, 10.306440"] = "Helga Hersteller";
+    this.z["54.184321, 11.321741"] = "Algenfarmer Arnold";
+    this.z["47.613276, 9.404404"] = "Bodensee Wasserentnahme Profis";
+    this.z["50.131683, 8.749988"] = "Kaufland Warenhandel";
+    this.z["49.293786, 9.373358"] = "Kaufland Warenhandel";
+    this.z["49.293786, 9.373358"] = "Kaufland Warenhandel";
+    this.z["50.939466, 6.855565"] = "Funny Frisch";
+    this.z["50.069181, 8.503821"] = "Kartoffelbauer Karl";
+    this.z["19.158395, 72.899095"] = "Evil Indian Curry Company";
+    this.z["51.493195, 5.613059"] = "Kartoffelbauer Friedrich";
   }
 
   blah(subject: BehaviorSubject<List<Supplier>>, val: any) {
@@ -29,13 +42,17 @@ export class BackendService {
         meta = instance;
       })
       .then(() => {
-        return Promise.all([meta.getProductName.call(val), meta.getLocation.call(val), meta.getOrigin.call(val)]);
+        return Promise.all(
+          [meta.getProductName.call(val),
+            meta.getLocation.call(val),
+            meta.getOrigin.call(val)]);
       }).then(value => {
       const sup = new Supplier();
       sup.name = value[0];
       console.log(value);
       const arr = value[1].split(',');
       sup.coord = [Number(arr[1]), Number(arr[0])];
+      sup.hash = this.z[value[1]];
       subject.next(subject.value.push(sup));
       for (const entry of value[2]) {
         this.blah(subject, entry); // 1, "string", false

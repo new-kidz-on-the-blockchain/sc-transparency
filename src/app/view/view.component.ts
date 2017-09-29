@@ -16,7 +16,7 @@ export class ViewComponent implements AfterViewInit {
 
   constructor(private backendService: BackendService) {
     this.selected = 0;
-    this.suppliers = this.backendService.getSuppliers(1);
+    this.suppliers = this.backendService.getSuppliers(2);
   }
 
   ngAfterViewInit() {
