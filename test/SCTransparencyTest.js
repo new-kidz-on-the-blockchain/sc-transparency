@@ -7,14 +7,17 @@ contract('Kontract', function(accounts) {
 
 
   it('should get transaction data', async function() {
+      let kontract = await Kontract.deployed();
+      const decoder = new InputDataDecoder(kontract.abi);
+      let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB', {from: accounts[0]});
 
-    let kontract = await Kontract.deployed();
-    const decoder = new InputDataDecoder(kontract.abi);
-    let transactionAddr = await kontract.addLifecyclePoint('Milch', [null], 'WSB');
-    let transaction = await web3.eth.getTransaction(transactionAddr.receipt.transactionHash);
-    let inputData = decoder.decodeData(transaction.input);
-    assert.equal(inputData.inputs[0],'Milch',"No milk in the Blockchain!");
-    assert.equal(inputData.inputs[2],'WSB',"Milk ist not from WSB!");
+      let id = extractId(transactionAddr);
+      
+      let origin = await kontract.getOrigin.call(id); 
+      console.log(origin);
+      assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
+      assert.equal(await kontract.getLocation.call(id),   'WSB',"Milk ist not from WSB!");
+      assert.deepEqual(origin,[],"origin is fishy");
   });
 
   it('should get TxID from QR Code', async function () {
@@ -27,19 +30,26 @@ contract('Kontract', function(accounts) {
 
   it('should get TxID from QR Code where TxID should be from Product', async function () {
     let kontract = await Kontract.deployed();
-    let transactionAddr = await kontract.addLifecyclePoint('Milch', [null], 'WSB');
-    kontract.mapQrCodeToTxid(1234567891,transactionAddr.receipt.transactionHash);
+    let transactionAddr = await kontract.addLifecyclePoint('Milch', [], 'WSB');
+    let id = extractId(transactionAddr);
+    kontract.mapQrCodeToTxid(1234567891,id);
     let txid = await kontract.getTxidFromQrCode.call(1234567891);
-    let txHash = web3.utils.toHex(txid);
-    assert.equal(txHash,transactionAddr.receipt.transactionHash,"Wrong TxID");
+    assert.deepEqual(txid,id,"Wrong TxID");
 
-    const decoder = new InputDataDecoder(kontract.abi);
-    let transaction = await web3.eth.getTransaction(transactionAddr.receipt.transactionHash);
-    let inputData = decoder.decodeData(transaction.input);
-    assert.equal(inputData.inputs[0],'Milch',"No milk in the Blockchain!");
-    assert.equal(inputData.inputs[2],'WSB',"Milk ist not from WSB!");
+    assert.equal(await kontract.getProductName.call(id),'Milch',"No milk in the Blockchain!");
+    assert.equal(await kontract.getLocation.call(id),   'WSB',"Milk ist not from WSB!");
   });
 
 
 
 });
+
+function extractId(transactionAddr){
+      for (var i = 0; i < transactionAddr.logs.length; i++){
+	  var log = transactionAddr.logs[i];
+	  if (log.event == "Id"){
+	      return log.args.id;
+	  }
+	  
+      }
+}
