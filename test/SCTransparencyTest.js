@@ -117,14 +117,14 @@ async function initalSuppliers(accounts) {
   await kontract.addSupplier(accounts[3], 'Account 3');
 }
 
-async function initalKontractAndSuppliers(accounts) {
-  await initalKontract();
-  await initalSuppliers(accounts);
-}
-
 async function initalLifecyclePoint(name,origin,location,account) {
   let transactionAddr = await kontract.addLifecyclePoint(name, origin, location, account);
   return extractId(transactionAddr);
+}
+
+async function initalKontractAndSuppliers(accounts) {
+  await initalKontract();
+  await initalSuppliers(accounts);
 }
 
 async function initalKontractAndSuppliersAndLifeCyclePoint(accounts, name, origin, location, account) {
