@@ -18,7 +18,7 @@
 
 
 
-  <app-map-component ></app-map-component>
+  <app-map-component [selectedsupplier]="selected"></app-map-component>
   <md-slider style="width:100%" [(ngModel)]="selected" [step]="1" [min]="0" [max]="(suppliers | async)?.size - 1" [thumbLabel]="true"
    (input)="onInputChange($event)"></md-slider>
   <app-supplierviewcard [supplier]="(suppliers | async)?.get(selected)"></app-supplierviewcard>

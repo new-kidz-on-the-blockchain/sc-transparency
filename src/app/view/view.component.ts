@@ -24,7 +24,6 @@ export class ViewComponent implements OnInit {
 
   onInputChange(event) {
     let silderValue = event.value;
-    alert("vakue changed" + silderValue);
   }
 
 }
